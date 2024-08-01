@@ -12,10 +12,9 @@ class TodoListController extends Controller
         return view('welcome', ['listItems' => ListItem::all()]);
     }
 
-    public function saveItem(Request $request)
+    public function saveItem(Request $request, ListItem $newListItem)
     {
         // \Log::info(json_encode($request->all()));
-        $newListItem = new ListItem;
         $newListItem->name = $request->input('listItem');
         $newListItem->is_completed = 0;
         $newListItem->save();
@@ -38,9 +37,9 @@ class TodoListController extends Controller
     }
 
     public function removeCompleted() {
-        $listItemsCompleted = ListItem::where('is_completed', '=', 1);
-        if (count($listItemsCompleted->get()) > 0) {
-            $listItemsCompleted->delete();
+        $listItemsCompleted = ListItem::where('is_completed', '=', 1)->get();
+        foreach($listItemsCompleted as $listItem) {
+            $listItem->delete();
         }
         return redirect('/');
     }
